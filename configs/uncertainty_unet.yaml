@@ -1,0 +1,44 @@
+experiment:
+  name: uncertainty_unet
+  seed: 42
+  output_dir: outputs/
+
+data:
+  dataset: brats2020_2d
+  data_root: data/brats2020_2d
+  split_file: configs/splits/default.json
+  modalities: [flair, t1, t1ce, t2]
+  num_classes: 4
+  image_size: 240
+  batch_size: 16
+  num_workers: 4
+
+model:
+  arch: uncertainty_unet
+  in_channels: 4
+  out_channels: 4
+  base_channels: 64
+  dropout: 0.2
+
+checkpoint_dir: checkpoints/
+
+training:
+  epochs: 60
+  optimizer: adam
+  lr: 1.0e-3
+  weight_decay: 1.0e-5
+  scheduler: cosine
+  loss: dice_ce
+  augment: true
+  dice_weight: 0.5
+  ce_weight: 0.5
+  early_stopping_patience: 8
+
+evaluation:
+  metrics: [dice, iou, hd95, accuracy]
+  save_predictions: true
+  uncertainty_passes: 30
+
+logging:
+  level: INFO
+  tensorboard: true
