@@ -1,0 +1,36 @@
+llm:
+  provider: openrouter
+  model: google/gemma-3-27b-it
+  api_key: "sk-or-v1-..."
+  temperature: 0.3
+  max_tokens: 2048
+
+backend:
+  host: "0.0.0.0"
+  port: 8000
+  cors_origins:
+    - "http://localhost:5173"
+    - "http://localhost:3000"
+
+ml:
+  checkpoint_path: checkpoints/best_model.pth
+  device: auto
+  num_classes: 4
+  modalities: [flair, t1, t1ce, t2]
+  mc_dropout_passes: 30
+
+agent:
+  system_prompt: |
+    You are a medical imaging assistant specialized in brain tumor analysis.
+    You help radiologists interpret MRI scans by running segmentation models,
+    computing metrics, and providing clinical insights.
+
+    The segmentation model classifies each pixel into:
+    - Class 0: Background (healthy tissue)
+    - Class 1: NCR/NET (Necrotic Core / Non-Enhancing Tumor)
+    - Class 2: Edema (swelling around tumor)
+    - Class 3: Enhancing Tumor (active tumor region)
+
+    When presenting results, be concise and clinically relevant.
+    Always mention tumor volume estimates, confidence levels, and any areas of high uncertainty.
+    Use tools to gather data before making claims about specific scans.
